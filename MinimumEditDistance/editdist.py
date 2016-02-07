@@ -16,9 +16,9 @@ class Node:
     def calcValue(self):
         SubstitutionCost=2 if self.LetterA!=self.LetterB else 0
         self.value=min([self.Parents[0].value+SubstitutionCost, self.Parents[1].value+1, self.Parents[2].value+1])
-        #for node in self.Parents:
-            #if node.value > self.value:
-                #self.Parents.remove(node)
+        for node in self.Parents:
+            if node.value > self.value:
+                self.Parents.remove(node)
 
 class Graph:
     def __init__(self, WortA, WortB):
@@ -48,26 +48,24 @@ class Graph:
             for y, d in enumerate(self.WortB):
                 print(self.dictio[(x, y)].value, end="\t")
             print()
-    def findAllResults(self, curNode=0, saveString="", maxval=100, valsave=0):
-        #print(saveString)
-        if valsave > maxval:
-            return
+    def findAllResults(self, curNode=0, saveString="", savelist=[]):
         if curNode==0:
             curNode=self.dictio[(len(self.WortA)-1, len(self.WortB)-1)]
             maxval=curNode.value
         if curNode.X==0 and curNode.Y==0:
-            print (saveString[::] + str(valsave))
+            print (saveString[::-1])
+            savelist.append(saveString[::-1])
         for node in curNode.Parents:
             val=str(node.value)
             if node.X == (curNode.X-1) and node.Y == (curNode.Y-1) and node.value==curNode.value:
-                self.findAllResults(curNode=node, saveString=saveString+"M", maxval=maxval, valsave=valsave+0)
+                self.findAllResults(curNode=node, saveString=saveString+"M", savelist=savelist)
             if node.X == (curNode.X-1) and node.Y == (curNode.Y-1) and node.value==(curNode.value-2):
-                self.findAllResults(curNode=node, saveString=saveString+"S", maxval=maxval, valsave=valsave+2)
+                self.findAllResults(curNode=node, saveString=saveString+"S", savelist=savelist)
             if node.X == (curNode.X-1) and node.Y == (curNode.Y) and node.value==(curNode.value-1):
-                self.findAllResults(curNode=node, saveString=saveString+"D", maxval=maxval, valsave=valsave+1)
+                self.findAllResults(curNode=node, saveString=saveString+"D", savelist=savelist)
             if node.X == (curNode.X) and node.Y == (curNode.Y-1) and node.value==(curNode.value-1):
-                self.findAllResults(curNode=node, saveString=saveString+"I", maxval=maxval, valsave=valsave+1)
-
+                self.findAllResults(curNode=node, saveString=saveString+"I", savelist=savelist)
+        return savelist
 if __name__=="__main__":
     test=Graph("pastor", "taste")
     test.initialise()
