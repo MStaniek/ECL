@@ -1,4 +1,5 @@
 import math
+
 class Perceptron:
     def __init__(self, dimensionen):
         self.weightvector=[0]*dimensionen
